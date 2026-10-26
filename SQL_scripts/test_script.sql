@@ -36,25 +36,27 @@ ORDER BY `nom_boisson` ASC;
 
 -- Requête de test n°5 : Afficher la liste des ingrédients pour une raclaccia
 
-SELECT `ingredient`.`nom_ingredient`, `comprend`.`quantite` AS grammes
+SELECT `nom_ingredient`, `quantite` AS grammes
 FROM `ingredient`
 JOIN `comprend` ON `ingredient`.`id_ingredient` = `comprend`.`id_ingredient`
 JOIN `focaccia` ON `focaccia`.`id_focaccia` = `comprend`.`id_focaccia`
-WHERE `focaccia`.`nom_focaccia` = 'Raclaccia';
+WHERE `nom_focaccia` = 'Raclaccia';
 
 -- Résultat attendu : Afichage des ingrédients pour une Raclaccia + quantités
 -- Résultat obtenu : Affichage des ingrédients pour une Raclaccia + leurs quantités en grammes
 
 -- Requête de test n°6 : Afficher le nom et le nombre d'ingrédients pour chaque focaccia
 
-SELECT `nom_focaccia`, COUNT(`comprend`.`id_ingredient`) AS nombre_ingredients
+SELECT `nom_focaccia`, COUNT(`id_ingredient`) AS nombre_ingredients
 FROM `focaccia`
 JOIN `comprend` ON `focaccia`.`id_focaccia` = `comprend`.`id_focaccia`
-GROUP BY `focaccia`.`nom_focaccia`;
+GROUP BY `focaccia`.`id_focaccia`
+ORDER BY nombre_ingredients DESC;
 
 -- Résultat attendu : Afficher le nombre d'ingrédients pour chque focaccia (par nom)
 -- Résultat obtenu : Affichage du nombre d'ingrédients dans une colonne nombre_ingredients pour chaque focaccia dans la colonne nom_focaccia. 
 -- Le nombre d'ingrédients est incorrect car sous-estimé par 1 pour toutes celles contenant des oeufs. 
+-- Le résultat est affiché en ordre décroissant selon le nombre d'ingrédients
 
 -- Explication du décalage : la différence d'écriture de 'oeuf' entre les CSV focaccia et ingrédient ('œuf' et 'oeuf').
 -- Le script d'importation ne l'inclue pas dans la table comprend car les deux lui aparaissent différents. 
@@ -63,10 +65,10 @@ GROUP BY `focaccia`.`nom_focaccia`;
 
 -- Requête de test n°7 : Afficher la focaccia contenant le plus d'ingrédients
 
-SELECT `nom_focaccia`, COUNT(`comprend`.`id_ingredient`) AS nombre_ingredients
+SELECT `nom_focaccia`, COUNT(`id_ingredient`) AS nombre_ingredients
 FROM `focaccia`
 JOIN `comprend` ON `focaccia`.`id_focaccia` = `comprend`.`id_focaccia`
-GROUP BY `focaccia`.`nom_focaccia`
+GROUP BY `focaccia`.`id_focaccia`
 ORDER BY nombre_ingredients DESC
 LIMIT 1;
 
@@ -95,7 +97,7 @@ ORDER BY `nom_focaccia` ASC;
 
 SELECT `nom_ingredient` AS ingrédients_inutilisés
 FROM `ingredient`
-WHERE `id_ingredient` NOT IN (SELECT `id_ingredient` FROM `comprend`)
+WHERE `id_ingredient` NOT IN (SELECT `id_ingredient` FROM `comprend`);
 
 -- Résultat attendu : Affichage dans une colonne ingrédients_inutilisés des ingrédients inutilisés.
 -- Résultat obtenu : Affichage de 3 ingrédients inutilisés au lieu de 2. 
@@ -114,7 +116,7 @@ WHERE `id_focaccia` NOT IN(
     JOIN `ingredient` ON `comprend`.`id_ingredient` = `ingredient`.`id_ingredient`
     WHERE `ingredient`.`nom_ingredient` = 'Champignon'
 )
-ORDER BY `nom_focaccia` ASC
+ORDER BY `nom_focaccia` ASC;
 
 -- Résultat attendu : Affichage de toutes les focaccias ne contenant pas de champignons dans la colonne focaccia_sans_champignons
 -- Résultat obtenu : Affichage correct de deux focaccias, les deux seules sans champignons. 
