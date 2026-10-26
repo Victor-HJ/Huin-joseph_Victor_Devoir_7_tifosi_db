@@ -40,8 +40,7 @@ IGNORE 1 LINES
 INSERT INTO `boisson`(`id_boisson`, `nom_boisson`, `id_marque`)
 SELECT `temp_boisson`.`id_boisson`, `temp_boisson`.`nom_boisson`, `marque`.`id_marque`
 FROM `temp_boisson`
-JOIN `marque` 
-ON `temp_boisson`.`nom_marque` = `marque`.`nom_marque`;
+JOIN `marque` ON `temp_boisson`.`nom_marque` = `marque`.`nom_marque`;
 
 DROP TEMPORARY TABLE `temp_boisson`;
 
@@ -75,7 +74,7 @@ INSERT INTO `temp_quantites` (`nom_ingredient`, `quantite`) VALUES
 -- 1. Prendre la table temporaire des ingrédients de chaque focaccia
 -- 2. Faire une jointure dès qu'un ingrédient de la table ingredient est retrouvé dans la liste contenue dans la table temporaire des ingrédients de chaque focaccia
 -- 3. Faire une jointure en insérant la quantité par défaut de l'ingrédient dès que les noms d'ingrédients concordent
--- 4. Insérer le résultat dans la table intermédiaire comprend
+-- 4. Insérer le résultat dans la table intermédiaire comprend pour avoir la quantité par défaut
 
 INSERT INTO `comprend` (`id_focaccia`, `id_ingredient`, `quantite`)
 SELECT `temp_focaccia_ingredients`.`id_focaccia`, `ingredient`.`id_ingredient`, `temp_quantites`.`quantite`
